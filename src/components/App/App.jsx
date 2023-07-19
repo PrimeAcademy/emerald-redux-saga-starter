@@ -3,35 +3,53 @@ import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 
 function App() {
+// Sidebar
+
+// Generator functions!
+function* myGenerator() {
+  yield 1;
+  yield 'hello';
+  yield { name: 'Emma'};
+  yield 35;
+};
+
+// Create an instance of the function
+const myGeneratorInstance = myGenerator();
+
+// Execute the generator function and get back whatever was yielded
+// console.log('first time:', myGeneratorInstance.next().value);
+// console.log('second time:', myGeneratorInstance.next().value);
+// console.log('third time:', myGeneratorInstance.next().value);
+// console.log('fourth time:', myGeneratorInstance.next().value);
+// console.log('fifth time:', myGeneratorInstance.next().value);
+
+// END SIDEBAR ON GENERATORS
+
   const dispatch = useDispatch();
   const elements = useSelector(store => store.elementList)
   const [newElement, setNewElement] = useState('');
 
-  const getElements = () => {
-    axios.get('/api/element').then(response => {
-      dispatch({ type: 'SET_ELEMENTS', payload: response.data });
-    })
-      .catch(error => {
-        console.log('error with element get request', error);
-      });
-  }
-
   useEffect(() => {
-    getElements();
+    dispatch({
+      type: 'FETCH_ELEMENTS'
+    })
   }, []);
 
   const addElement = () => {
-    axios.post('/api/element', { 
-      name: newElement
-    })
-      .then(() => {
-        getElements();
-        setNewElement('');
-      })
-      .catch(error => {
-        console.log('error with element get request', error);
-      });
-
+    dispatch({ type: 'ADD_ELEMENT', payload: newElement });
+    setNewElement('');
+    // axios.post('/api/element', { 
+    //   name: newElement
+    // })
+    //   .then(() => {
+    //     dispatch({
+    //       type: 'FETCH_ELEMENTS'
+    //     })
+    //     setNewElement('');
+    //   })
+    //   .catch(error => {
+    //     console.log('error with element get request', error);
+    //   });
   }
 
 
